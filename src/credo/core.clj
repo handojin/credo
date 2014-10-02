@@ -8,8 +8,7 @@
             [org.httpkit.server :as server]
             [org.httpkit.client :as client]
             [taoensso.timbre :as timbre]
-            [datomic.api :as d]
-            )
+            [datomic.api :as d])
   (:import (com.stormpath.sdk.client Client Clients)
            (com.stormpath.sdk.api ApiKey ApiKeys)
            ;;(com.stormpath.sdk.tenant)
@@ -24,13 +23,16 @@
 
 (def client (.build (.setApiKey (Clients/builder) apikey)))
 
-(def application (let [application (.instantiate client Application)
-                       application (.setName application "credo")
-                       application (.createApplication 
-                                    client 
-                                    (.build (.createDirectory 
-                                             (Applications/newCreateRequestFor application))))]
-                   application))
+(defn- create-application [name] (let [application (.instantiate client Application)
+                                application (.setName application name)
+                                application (.createApplication 
+                                             client 
+                                             (.build 
+                                              (.createDirectory 
+                                               (Applications/newCreateRequestFor application))))]
+                            application))
+
+(def application (first (iterator-seq (.iterator (.getApplications client {"name" "credo"})))))
 
 (def id-site (.newIdSiteUrlBuilder application))
 

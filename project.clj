@@ -3,6 +3,7 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
+
   :dependencies [
                  ;;clojure
                  [org.clojure/clojure "1.5.1"]
@@ -32,8 +33,14 @@
                  ;;logging
                  [com.taoensso/timbre "3.2.1"]]
   
-  :plugins [[lein-cljsbuild "1.0.2"]]
 
+
+  :ring {:handler credo.handler/app,
+         :init credo.handler/init,
+         :destroy credo.handler/destroy}
+  
+  :plugins [[lein-cljsbuild "1.0.2"]]
+  
   :source-paths ["src"]
 
   :main credo.core)
