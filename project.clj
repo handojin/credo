@@ -39,7 +39,8 @@
          :init credo.handler/init,
          :destroy credo.handler/destroy}
   
-  :plugins [[lein-cljsbuild "1.0.2"]]
+  :plugins [[lein-cljsbuild "1.0.2"]
+            [lein-beanstalk "0.2.7"]]
   
   :source-paths ["src"]
 
