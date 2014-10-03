@@ -33,15 +33,14 @@
                  ;;logging
                  [com.taoensso/timbre "3.2.1"]]
   
-
-
   :ring {:handler credo.handler/app,
          :init credo.handler/init,
          :destroy credo.handler/destroy}
   
   :plugins [[lein-cljsbuild "1.0.2"]
-            [lein-beanstalk "0.2.7"]]
-  
+            [lein-beanstalk "0.2.7"]
+            [com.palletops/pallet-lein "0.8.0-alpha.1"]]
+
   :source-paths ["src"]
 
   :main credo.core)

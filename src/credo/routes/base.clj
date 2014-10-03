@@ -1,5 +1,5 @@
 (ns credo.routes.base
-  (:require [compojure.core :refer (defroutes ANY)]
+  (:require [compojure.core :refer (defroutes ANY GET)]
             [compojure.route :as route]
             [ring.util.response :as response]
             [liberator.core :refer [defresource]]
@@ -18,10 +18,12 @@
 
 ;;compojure routes
 (defroutes routes
-  ;;(GET "/" [] "oh hai!")
+  (GET "/" [] (response/redirect "index.html"))
   ;;(GET "/hello" [] "hello world!")
   (ANY "/hello" {params :params} (hello-resource (:name params)))
   (ANY "/hello/:name" [name] (hello-resource name))
   (ANY "/login" [] (stormpath/login))
-  (ANY "/id" [] (response/redirect "http://localhost:8080/hello/world"))
-  (route/files "/" {:root "resources/public"}))
+  (ANY "/id" [] (response/redirect "/hello/world"))
+  ;;(route/files "/" {:root "resources/public"})
+  (route/resources "/")
+  (route/not-found "not found"))

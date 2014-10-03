@@ -21,3 +21,4 @@
                (or (System/getenv "PORT") "8080"))]
     (server/run-server app {:port port :join? false}))
   (timbre/info "application started"))
+

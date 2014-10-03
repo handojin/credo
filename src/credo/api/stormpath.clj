@@ -7,9 +7,18 @@
            (com.stormpath.sdk.authc UsernamePasswordRequest)
            (com.stormpath.sdk.idsite IdSiteUrlBuilder)))
 
-(def path (str (System/getProperty "user.home") "/.stormpath/apiKey.properties"))
+;;(def path (str (System/getProperty "user.home") "/.stormpath/apiKey.properties"))
 
-(def apikey (.build (.setFileLocation (ApiKeys/builder) path)))
+(if  (nil? (System/getProperty "PARAM1")) (System/setProperty "PARAM1" (System/getenv "PARAM1")))
+(if  (nil? (System/getProperty "PARAM2")) (System/setProperty "PARAM2" (System/getenv "PARAM2")))
+
+(def apikey (-> 
+             (ApiKeys/builder) 
+             (.setId (System/getProperty "PARAM1")) 
+             (.setSecret (System/getProperty"PARAM2")) 
+             (.build)))
+
+;;(def apikey (.build (.setFileLocation (ApiKeys/builder) path)))
 
 (def client (.build (.setApiKey (Clients/builder) apikey)))
 
