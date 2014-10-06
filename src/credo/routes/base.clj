@@ -24,6 +24,6 @@
   (ANY "/hello/:name" [name] (hello-resource name))
   (ANY "/login" [] (stormpath/login))
   (ANY "/id" [] (response/redirect "/hello/world"))
-  ;;(route/files "/" {:root "resources/public"})
   (route/resources "/")
+  (route/files "/" {:root "resources/public"})
   (route/not-found "not found"))
