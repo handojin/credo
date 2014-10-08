@@ -16,7 +16,8 @@
                  [ring/ring-json "0.3.1"]
                  [http-kit "2.1.16"] 
                  [compojure "1.1.8"]
-                 [liberator "0.11.0"]
+                 [lib-noir "0.9.1"]
+                 [liberator "0.12.2"]
                  [ring/ring-devel "1.3.0"]
                 
                  ;;stormpath - identity management

@@ -5,7 +5,8 @@
            (com.stormpath.sdk.application Application Applications)
            (com.stormpath.sdk.account Account)
            (com.stormpath.sdk.authc UsernamePasswordRequest)
-           (com.stormpath.sdk.idsite IdSiteUrlBuilder)))
+           (com.stormpath.sdk.http HttpMethod HttpRequest HttpRequests)
+           (com.stormpath.sdk.idsite IdSiteUrlBuilder IdSiteCallbackHandler)))
 
 ;;(def path (str (System/getProperty "user.home") "/.stormpath/apiKey.properties"))
 
@@ -57,5 +58,15 @@
 
 (defn login []
   (response/redirect (get-id-site-url)))
+
+(defn id [request] 
+  (let [request (->  
+                 (HttpRequests/method HttpMethod/GET)
+                 (.headers (:headers request))
+                 (.queryParameters (:query-string request))
+                 (.build))
+        result  (.getAccountResult (.newIdSiteCallbackHandler application request))
+        account (.getAccount result)]
+    (.getEmail account)))
 
 (set-id-site-callback-uri "http://localhost:8080/id")
