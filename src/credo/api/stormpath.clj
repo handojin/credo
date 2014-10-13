@@ -1,5 +1,7 @@
 (ns credo.api.stormpath
-  (:require [ring.util.response :as response])
+  (:require [noir.response :as response]
+            [noir.session :as session]
+            [datomic.api :as d])
   (:import (com.stormpath.sdk.client Client Clients)
            (com.stormpath.sdk.api ApiKey ApiKeys)
            (com.stormpath.sdk.application Application Applications)
@@ -33,6 +35,8 @@
 (defn get-id-site-url []
   (.build id-site))
 
+(set-id-site-callback-uri "http://localhost:8080/id")
+
 (defn create-application [name] 
   (let [application (.instantiate client Application)
         application (.setName application name)
@@ -56,8 +60,39 @@
         result (.authenticateAccount application request)]
     (.getAccount  result)))
 
+;;TODO - refactor from here
+
 (defn login []
   (response/redirect (get-id-site-url)))
+
+;;database
+(def uri "datomic:mem://credo")
+
+(d/create-database uri)
+
+(def conn (d/connect uri))
+
+;;initialize schema
+(d/transact conn  (read-string (slurp "./resources/schemata/schema.edn")))
+
+(defn- new-profile [result]
+  (let [account (.getAccount result)
+        ;;custom  (.getCustomData account)
+        conn    (d/connect "datomic:mem://credo")
+        db      (d/db conn)
+        tID     (d/tempid :db.part/user)
+        tx      [{:db/id tID 
+                  :person/account (java.net.URI. (.getHref account))
+                  :person/firstName (.getGivenName account)
+                  :person/lastName (.getSurname account)
+                  :person/email (.getEmail account)}]
+        tx      @(d/transact conn tx)
+        eID     (d/resolve-tempid (d/db conn) (:tempids tx) tID)
+        ]
+    ;;(.put custom "entityID" eID)
+    ;;(.save account)
+    (session/put! :entity eID)
+    (response/redirect (str "http://localhost:8080/id/" eID))))
 
 (defn id [request] 
   (let [request (->  
@@ -67,6 +102,24 @@
                  (.build))
         result  (.getAccountResult (.newIdSiteCallbackHandler application request))
         account (.getAccount result)]
-    (.getEmail account)))
 
-(set-id-site-callback-uri "http://localhost:8080/id")
+    ;;howto - manipulate session
+    ;;(session/put! :testKey (.getEmail account))
+    (if (.isNewAccount result) (new-profile result))))
+
+(defn test-datomic []
+  (let [conn    (d/connect "datomic:mem://credo")
+        db      (d/db conn)
+        tID     (d/tempid :db.part/user)
+        t       [{:db/id tID
+                  :person/account (java.net.URI. "http://test.com")
+                  :person/firstName "oli"
+                  :person/lastName "gorm"
+                  :person/email "oli@test.com"}] 
+        tx      @(d/transact conn t)]
+    ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
+    (str  tx)
+))
+(test-datomic)
+;; (d/q '[:find ?e :where [?e :person/firstName ?a]] (d/db conn))
+;; ;; (d/touch (d/entity (d/db (d/connect "datomic:mem://credo")) 17592186045453 ))

@@ -1,0 +1,47 @@
+[
+;;person entity
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/account
+ :db/valueType :db.type/uri
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's stormpath account"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/firstName
+ :db/valueType :db.type/string
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's first name"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/lastName
+ :db/valueType :db.type/string
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's last name"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/email
+ :db/valueType :db.type/string
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's email"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/height
+ :db/valueType :db.type/bigdec
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's height"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/weight
+ :db/valueType :db.type/string
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's weight"
+ :db.install/_attribute :db.part/db}
+
+
+]

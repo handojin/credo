@@ -19,17 +19,21 @@
                  [lib-noir "0.9.1"]
                  [liberator "0.12.2"]
                  [ring/ring-devel "1.3.0"]
-                
+                 [org.clojure/data.json "0.2.5"]
+                 
                  ;;stormpath - identity management
                  [com.stormpath.sdk/stormpath-sdk-api "1.0.RC2"]
                  [com.stormpath.sdk/stormpath-sdk-httpclient "1.0.RC2"]
                  [com.stormpath.sdk/stormpath-sdk-oauth "1.0.RC2"]
                  
                  ;;ui
-                 [om "0.6.4"]
+                 ;;server-side templating 
+                 [enlive "1.1.5"]
+                 ;;client-side (later)
+                 ;;[om "0.6.4"]
                  
                  ;;database
-                 [com.datomic/datomic-free "0.9.4815"] 
+                 [com.datomic/datomic-free "0.9.4899"] 
 
                  ;;logging
                  [com.taoensso/timbre "3.2.1"]]
