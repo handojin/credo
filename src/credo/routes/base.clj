@@ -1,8 +1,8 @@
 (ns credo.routes.base
-  (:require [compojure.core :refer (defroutes ANY GET)]
+  (:require [compojure.core :refer (defroutes ANY GET POST)]
             [compojure.route :as route]
             [noir.session :as session]
-            ;;[ring.util.response :as response]
+            [ring.middleware.anti-forgery :as af]
             [noir.response :as nr]
             [clojure.data.json :as json]
             [liberator.core :refer [defresource]]
@@ -34,13 +34,20 @@
       [idx (bigint id)
        entity (d/touch (d/entity (d/db conn) idx))]
     (html/deftemplate profile "../resources/public/profile.html" []
+      [(html/attr= :name "__anti-forgery-token")] (html/set-attr :value af/*anti-forgery-token*)
       [:title] (html/content (str (:person/firstName entity)))
       [:span#firstName] (html/content (str (:person/firstName entity)))
       [:span#lastName] (html/content (str (:person/lastName entity)))
       [:span#email] (html/content (str (:person/email entity)))
-      [:input#height] (html/set-attr :value "6'00''")
-      [:input#weight] (html/set-attr :value "202.5 lb")))
+      [:input#height] (html/set-attr :value (str (:person/height entity)))
+      [:input#weight] (html/set-attr :value (str (:person/weight entity)))))
   (reduce str (profile)))
+
+(defn- set-profile [id height weight]
+  (d/transact conn [{:db/id (bigint id) 
+                     :person/weight (Float/parseFloat weight)
+                     :person/height (Float/parseFloat height)}])
+  (nr/redirect (str "http://localhost:8080/id/" id)))
 
 ;;liberator resources
 (defresource hello-resource [name]
@@ -69,9 +76,8 @@
   ;;login/register
   (ANY "/login" [] (stormpath/login))
   (ANY "/id" request (stormpath/id request))
-  ;;TODO - profile page
-  (ANY "/id/:id" [id] (get-profile id))
-
+  (GET "/id/:id" [id] (get-profile id))
+  (POST "/id/:id" [id height weight] (set-profile id height weight))
   ;;static resources
   (route/resources "/")
   (route/files "/" {:root "resources/public"})

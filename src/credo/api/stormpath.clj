@@ -85,7 +85,9 @@
                   :person/account (java.net.URI. (.getHref account))
                   :person/firstName (.getGivenName account)
                   :person/lastName (.getSurname account)
-                  :person/email (.getEmail account)}]
+                  :person/email (.getEmail account)
+                  :person/height 0.0
+                  :person/weight 0.0}]
         tx      @(d/transact conn tx)
         eID     (d/resolve-tempid (d/db conn) (:tempids tx) tID)
         ]
@@ -115,10 +117,12 @@
                   :person/account (java.net.URI. "http://test.com")
                   :person/firstName "oli"
                   :person/lastName "gorm"
-                  :person/email "oli@test.com"}] 
+                  :person/email "oli@test.com"
+                  :person/height 0.0
+                  :person/weight 0.0}] 
         tx      @(d/transact conn t)]
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
-    (str  tx)
+    (str tx)
 ))
 (test-datomic)
 ;; (d/q '[:find ?e :where [?e :person/firstName ?a]] (d/db conn))
