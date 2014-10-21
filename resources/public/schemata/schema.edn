@@ -1,0 +1,195 @@
+[
+;;person entity
+
+;;info
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/account
+ :db/valueType :db.type/uri
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's stormpath account"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/firstName
+ :db/valueType :db.type/string
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's first name"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/lastName
+ :db/valueType :db.type/string
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's last name"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/email
+ :db/valueType :db.type/string
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's email"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/gender
+ :db/valueType :db.type/ref
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's biological gender"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/user]
+ :db/ident :person.gender/female}
+
+{:db/id #db/id[:db.part/user]
+ :db/ident :person.gender/male}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/dob
+ :db/valueType :db.type/instant
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's date of birth"
+ :db.install/_attribute :db.part/db}
+
+;;metrics
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/height
+ :db/valueType :db.type/float
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's height"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/weight
+ :db/valueType :db.type/float
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's weight"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/dexaT
+ :db/valueType :db.type/float
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's dexa T score"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/dexaZ
+ :db/valueType :db.type/float
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's dexa Z score"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/rhr
+ :db/valueType :db.type/float
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's resting heart rate"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/challenges
+ :db/valueType :db.type/ref
+ :db/cardinality :db.cardinality/many
+ :db/doc "A person's challenges"
+ :db.install/_attribute :db.part/db}
+
+
+;;challenge templates
+{:db/id #db/id[:db.part/db]
+ :db/ident :challenge.template/id
+ :db/valueType :db.type/uuid
+ :db/unique :db.unique/identity
+ :db/cardinality :db.cardinality/one
+ :db/doc "challenge template unique id"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :challenge.template/name
+ :db/valueType :db.type/string
+ :db/unique :db.unique/value
+ :db/cardinality :db.cardinality/one
+ :db/doc "challenge template short name"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :challenge.template/description
+ :db/valueType :db.type/string
+ :db/unique :db.unique/value
+ :db/cardinality :db.cardinality/one
+ :db/doc "challenge template description"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :challenge.template/parameters
+ :db/valueType :db.type/ref
+ :db/cardinality :db.cardinality/many
+ :db/doc "challenge parameters (beliefs & exceptions)"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :challenge.template/type
+ :db/valueType :db.type/ref
+ :db/cardinality :db.cardinality/one
+ :db/doc "challenge type"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/user]
+ :db/ident :challenge.template.type/public}
+
+{:db/id #db/id[:db.part/user]
+ :db/ident :challenge.template.type/private}
+
+
+;;challenge instances
+{:db/id #db/id[:db.part/db]
+ :db/ident :challenge.instance/id
+ :db/valueType :db.type/uuid
+ :db/unique :db.unique/identity
+ :db/cardinality :db.cardinality/one
+ :db/doc "challenge instance unique id"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :challenge.instance/template
+ :db/valueType :db.type/ref
+ :db/cardinality :db.cardinality/one
+ :db/doc "challenge instance template"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :challenge.instance/startDate
+ :db/valueType :db.type/instant
+ :db/cardinality :db.cardinality/one
+ :db/doc "challenge instance start date"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :challenge.instance/endDate
+ :db/valueType :db.type/instant
+ :db/cardinality :db.cardinality/one
+ :db/doc "challenge instance end date"
+ :db.install/_attribute :db.part/db}
+
+;;owner/author/editor metadata
+{:db/id #db/id[:db.part/db]
+ :db/ident :asset.metadata/owner
+ :db/valueType :db.type/ref
+ :db/cardinality :db.cardinality/many
+ :db/doc "asset owner"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :asset.metadata/createdBy
+ :db/valueType :db.type/ref
+ :db/cardinality :db.cardinality/one
+ :db/doc "person record of user who created this asset"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :asset.metadata/modifiedBy
+ :db/valueType :db.type/ref
+ :db/cardinality :db.cardinality/one
+ :db/doc "person record of user edited this asset"
+ :db.install/_attribute :db.part/db}
+
+]

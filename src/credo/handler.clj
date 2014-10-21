@@ -1,6 +1,5 @@
 (ns credo.handler
   (:require [noir.util.middleware :as nm]
-            [ring.middleware.reload :as reload]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.rotor :as rotor]
             [credo.routes.base :as base]))
@@ -24,4 +23,5 @@
 
 (def app (->
           (nm/app-handler [base/routes])
-          (reload/wrap-reload)))
+          ;;(reload/wrap-reload)
+          ))

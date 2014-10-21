@@ -1,6 +1,7 @@
 (ns credo.api.stormpath
   (:require [noir.response :as response]
             [noir.session :as session]
+            [noir.io :as io]
             [datomic.api :as d])
   (:import (com.stormpath.sdk.client Client Clients)
            (com.stormpath.sdk.api ApiKey ApiKeys)
@@ -73,7 +74,7 @@
 (def conn (d/connect uri))
 
 ;;initialize schema
-(d/transact conn  (read-string (slurp "./resources/schemata/schema.edn")))
+(d/transact conn  (read-string (io/slurp-resource "/schemata/schema.edn")))
 
 (defn- new-profile [result]
   (let [account (.getAccount result)

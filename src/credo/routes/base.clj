@@ -49,6 +49,16 @@
                      :person/height (Float/parseFloat height)}])
   (nr/redirect (str "http://localhost:8080/id/" id)))
 
+(defn- get-weight-history [id]
+  (str
+   (d/q '[:find ?tx ?tx-time ?v 
+          :in $ ?e ?a 
+          :where [?e ?a ?v ?tx _] 
+          [?tx :db/txInstant ?tx-time]] 
+        (d/history (d/db conn)) 
+        (bigint id) 
+        :person/weight)))
+
 ;;liberator resources
 (defresource hello-resource [name]
   ;;(timbre/info (str "in defresource with param " name))
@@ -78,6 +88,7 @@
   (ANY "/id" request (stormpath/id request))
   (GET "/id/:id" [id] (get-profile id))
   (POST "/id/:id" [id height weight] (set-profile id height weight))
+  (ANY "/id/:id/history/weight" [id] (get-weight-history id))
   ;;static resources
   (route/resources "/")
   (route/files "/" {:root "resources/public"})
