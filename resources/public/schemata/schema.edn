@@ -170,23 +170,39 @@
  :db/doc "challenge instance end date"
  :db.install/_attribute :db.part/db}
 
-;;owner/author/editor metadata
+;;entity security metatdata
 {:db/id #db/id[:db.part/db]
- :db/ident :asset.metadata/owner
+ :db/ident :entity.security.metadata/ownership
  :db/valueType :db.type/ref
  :db/cardinality :db.cardinality/many
- :db/doc "asset owner"
+ :db/doc "asset owner(s)"
  :db.install/_attribute :db.part/db}
 
 {:db/id #db/id[:db.part/db]
- :db/ident :asset.metadata/createdBy
+ :db/ident :entity.security.metadata/editors
+ :db/valueType :db.type/ref
+ :db/cardinality :db.cardinality/many
+ :db/doc "asset owner(s)"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :entity.security.metadata/readers
+ :db/valueType :db.type/ref
+ :db/cardinality :db.cardinality/many
+ :db/doc "asset owner(s)"
+ :db.install/_attribute :db.part/db}
+
+
+;;entity history metadata
+{:db/id #db/id[:db.part/db]
+ :db/ident :entity.history.metadata/createdBy
  :db/valueType :db.type/ref
  :db/cardinality :db.cardinality/one
  :db/doc "person record of user who created this asset"
  :db.install/_attribute :db.part/db}
 
 {:db/id #db/id[:db.part/db]
- :db/ident :asset.metadata/modifiedBy
+ :db/ident :entity.history.metadata/modifiedBy
  :db/valueType :db.type/ref
  :db/cardinality :db.cardinality/one
  :db/doc "person record of user edited this asset"

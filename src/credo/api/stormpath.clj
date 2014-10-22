@@ -117,7 +117,7 @@
         t       [{:db/id tID
                   :person/account (java.net.URI. "http://test.com")
                   :person/firstName "oli"
-                  :person/lastName "gorm"
+                  :person/lastName "gorman"
                   :person/email "oli@test.com"
                   :person/height 0.0
                   :person/weight 0.0}] 
