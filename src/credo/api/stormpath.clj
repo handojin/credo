@@ -110,21 +110,6 @@
     ;;(session/put! :testKey (.getEmail account))
     (if (.isNewAccount result) (new-profile result))))
 
-(defn test-datomic []
-  (let [conn    (d/connect "datomic:mem://credo")
-        db      (d/db conn)
-        tID     (d/tempid :db.part/user)
-        t       [{:db/id tID
-                  :person/account (java.net.URI. "http://test.com")
-                  :person/firstName "oli"
-                  :person/lastName "gorman"
-                  :person/email "oli@test.com"
-                  :person/height 0.0
-                  :person/weight 0.0}] 
-        tx      @(d/transact conn t)]
-    ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
-    (str tx)
-))
-(test-datomic)
+
 ;; (d/q '[:find ?e :where [?e :person/firstName ?a]] (d/db conn))
 ;; ;; (d/touch (d/entity (d/db (d/connect "datomic:mem://credo")) 17592186045453 ))

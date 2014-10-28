@@ -8,6 +8,7 @@
             [liberator.core :refer [defresource]]
             [credo.api.hello :as hello]
             [credo.api.stormpath :as stormpath]
+            [credo.api.database.init :as init]
             [datomic.api :as d]
             [net.cgrand.enlive-html :as html]))
 

@@ -102,38 +102,22 @@
 (defn init-challenge []
   (let [t       [{:db/id (d/tempid :db.part/user)
                   :challenge/id (d/squuid)
-                  :program/name "science... it works"
-                  :program/description "a science based approach to better health"
-                  :program/parameters [{:program.parameter/id (d/squuid)
-                                        :program.parameter/text 
-                                        "I will get 8 hours of sleep every day"}
-                                       {:program.parameter/id (d/squuid)
-                                        :program.parameter/text 
-                                        "I will do 15 minutes of interval sprints 3 times a week"}
-                                       {:program.parameter/id (d/squuid)
-                                        :program.parameter/text 
-                                        "I will do stronglifts 5x5 workouts 3 times a week"}
-                                       {:program.parameter/id (d/squuid)
-                                        :program.parameter/text 
-                                        "I will only consume my target calories"}
-                                       {:program.parameter/id (d/squuid)
-                                        :program.parameter/text 
-                                        "I will drink 3l of water per day"}]
-                  :program/type :program.type/public}
-                 {:db/id (d/tempid :db.part/user)
-                  :program/id (d/squuid)
-                  :program/name "kmetz crossfit 722"
-                  :program/description "the way of the cross"
-                  :program/parameters [{:program.parameter/id (d/squuid)
-                                        :program.parameter/text 
-                                        "I will get 8 hours of sleep every day"}
-                                       {:program.parameter/id (d/squuid)
-                                        :program.parameter/text 
-                                        "I will do 15 minutes of interval sprints 3 times a week"}
-                                       {:program.parameter/id (d/squuid)
-                                        :program.parameter/text 
-                                        "I will do stronglifts 5x5 workouts 3 times a week"}]
-                  :program/type :program.type/public}] 
+                  :challenge/program 17592186045428
+                  :challenge/startDate (clojure.instant/read-instant-date "2014-10-31")
+                  :challenge/endDate (clojure.instant/read-instant-date "2014-12-31")
+
+                  :challenge/exceptions 
+                  [{:challenge.exception/id (d/squuid)
+                    :challenge.exception/parameter 17592186045429 
+                    :challenge.exception/quantity 4}
+                   {:challenge.exception/id (d/squuid)
+                    :challenge.exception/parameter 17592186045430 
+                    :challenge.exception/quantity 4}
+                   {:challenge.exception/id (d/squuid)
+                    :challenge.exception/parameter 17592186045431
+                    :challenge.exception/quantity  4}]}] 
         tx      @(d/transact conn t)]
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
     (str tx)))
+
+(init-challenge)
