@@ -137,14 +137,16 @@
 (issue-invite 17592186045425 17592186045426 17592186045428 "try some science in your diet")
 (issue-invite 17592186045426 17592186045427 17592186045428 "you won't make it")
 
-(defn respond-to-invite [invite response]
-  (let [t [{:db/id invite
-            :invite/status 
-            (cond (= response "accept") :invite.status/accepted
-                  (= response "decline") :invite.status/declined)}]
+(defn accept-invite [invite]
+  (let [t [{:db/id invite :invite/status :invite.status/accepted}]
         tx @(d/transact conn t)]
     (str tx)))
 
-(respond-to-invite 17592186045448 "accept")
-(respond-to-invite 17592186045454 "decline")
+(defn decline-invite [invite]
+  (let [t [{:db/id invite :invite/status :invite.status/declined}]
+        tx @(d/transact conn t)]
+    (str tx)))
+
+(accept-invite 17592186045448)
+(decline-invite 17592186045454)
 
