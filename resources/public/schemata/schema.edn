@@ -4,6 +4,7 @@
 ;;info
 {:db/id #db/id[:db.part/db]
  :db/ident :person/account
+ :db/unique :db.unique/identity
  :db/valueType :db.type/uri
  :db/cardinality :db.cardinality/one
  :db/doc "A person's stormpath account"
@@ -241,6 +242,13 @@
  :db.install/_attribute :db.part/db}
 
 {:db/id #db/id[:db.part/db]
+ :db/ident :challenge/allowViral
+ :db/valueType :db.type/boolean
+ :db/cardinality :db.cardinality/one
+ :db/doc "are 'viral' challenges allowed?"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
  :db/ident :challenge/exceptions
  :db/isComponent true
  :db/valueType :db.type/ref
@@ -270,6 +278,61 @@
  :db/cardinality :db.cardinality/one
  :db/doc "challenge exception quantity"
  :db.install/_attribute :db.part/db}
+
+
+;;invites
+{:db/id #db/id[:db.part/db]
+ :db/ident :invite/id
+ :db/valueType :db.type/uuid
+ :db/unique :db.unique/identity
+ :db/cardinality :db.cardinality/one
+ :db/doc "invite unique id"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :invite/challenger
+ :db/valueType :db.type/ref
+ :db/cardinality :db.cardinality/one
+ :db/doc "user who sent an invite for this challenge"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :invite/challengee
+ :db/valueType :db.type/ref
+ :db/cardinality :db.cardinality/one
+ :db/doc "user to whom the invite was sent"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :invite/challenge
+ :db/valueType :db.type/ref
+ :db/cardinality :db.cardinality/one
+ :db/doc "challenge related to this invite"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :invite/status
+ :db/valueType :db.type/ref
+ :db/cardinality :db.cardinality/one
+ :db/doc "status of this invite"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/user]
+ :db/ident :invite.status/issued}
+
+{:db/id #db/id[:db.part/user]
+ :db/ident :invite.status/accepted}
+
+{:db/id #db/id[:db.part/user]
+ :db/ident :invite.status/declined}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :invite/message
+ :db/valueType :db.type/string 
+ :db/cardinality :db.cardinality/one
+ :db/doc "invite message text"
+ :db.install/_attribute :db.part/db}
+
 
 ;;entity security metatdata
 {:db/id #db/id[:db.part/db]

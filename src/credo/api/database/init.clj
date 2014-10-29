@@ -112,12 +112,39 @@
                     :challenge.exception/quantity 4}
                    {:challenge.exception/id (d/squuid)
                     :challenge.exception/parameter 17592186045430 
-                    :challenge.exception/quantity 4}
+                    :challenge.exception/quantity 3}
                    {:challenge.exception/id (d/squuid)
                     :challenge.exception/parameter 17592186045431
-                    :challenge.exception/quantity  4}]}] 
+                    :challenge.exception/quantity  1}]}] 
         tx      @(d/transact conn t)]
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
     (str tx)))
 
 (init-challenge)
+
+(defn issue-invite [challenger challengee challenge message]
+  (let [t       [{:db/id (d/tempid :db.part/user)
+                  :invite/id (d/squuid)
+                  :invite/challenger challenger
+                  :invite/challengee challengee
+                  :invite/challenge challenge
+                  :invite/message message
+                  :invite/status :invite.status/issued}] 
+        tx      @(d/transact conn t)]
+    ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
+    (str tx)))
+
+(issue-invite 17592186045425 17592186045426 17592186045428 "try some science in your diet")
+(issue-invite 17592186045426 17592186045427 17592186045428 "you won't make it")
+
+(defn respond-to-invite [invite response]
+  (let [t [{:db/id invite
+            :invite/status 
+            (cond (= response "accept") :invite.status/accepted
+                  (= response "decline") :invite.status/declined)}]
+        tx @(d/transact conn t)]
+    (str tx)))
+
+(respond-to-invite 17592186045448 "accept")
+(respond-to-invite 17592186045454 "decline")
+
