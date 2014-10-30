@@ -52,7 +52,23 @@
  :db/doc "A person's date of birth"
  :db.install/_attribute :db.part/db}
 
+{:db/id #db/id[:db.part/db]
+ :db/ident :person/metrics
+ :db/isComponent true
+ :db/valueType :db.type/ref
+ :db/cardinality :db.cardinality/one
+ :db/doc "A person's metrics"
+ :db.install/_attribute :db.part/db}
+
 ;;metrics
+{:db/id #db/id[:db.part/db]
+ :db/ident :person.metrics/id
+ :db/valueType :db.type/uuid
+ :db/unique :db.unique/identity
+ :db/cardinality :db.cardinality/one
+ :db/doc "person metrics unique id"
+ :db.install/_attribute :db.part/db}
+
 {:db/id #db/id[:db.part/db]
  :db/ident :person.metrics/height
  :db/valueType :db.type/float

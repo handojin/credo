@@ -34,7 +34,9 @@
                  ;;[om "0.6.4"]
                  
                  ;;database
-                 [com.datomic/datomic-free "0.9.4899"] 
+                 [com.datomic/datomic-free "0.9.5052"] 
+                 ;;schema visualization
+                 [datomic-schema-grapher "0.0.1"]
 
                  ;;logging
                  [com.taoensso/timbre "3.2.1"]]

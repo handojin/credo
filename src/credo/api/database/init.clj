@@ -18,40 +18,46 @@
 
 (defn init-users []
   (let [t       [{:db/id (d/tempid :db.part/user)
-                  :person/account (java.net.URI. "http://test.credo.io")
+                  :person/account (java.net.URI. "http://oli.test.credo.io")
                   :person/firstName "oliver"
                   :person/lastName "gorman"
                   :person/email "oli@test.credo.io"
-                  :person.metrics/height 0.0
-                  :person.metrics/weight 0.0}
+                  :person/metrics {:person.metrics/id (d/squuid)
+                                   :person.metrics/height 0.0
+                                   :person.metrics/weight 0.0}}
                  {:db/id (d/tempid :db.part/user)
-                  :person/account (java.net.URI. "http://test.credo.io")
+                  :person/account (java.net.URI. "http://glenn.test.credo.io")
                   :person/firstName "glenn"
                   :person/lastName "bates"
                   :person/email "glenn@test.credo.io"
-                  :person.metrics/height 0.0
-                  :person.metrics/weight 0.0}
+                  :person/metrics {:person.metrics/id (d/squuid)
+                                   :person.metrics/height 0.0
+                                   :person.metrics/weight 0.0}}
                  {:db/id (d/tempid :db.part/user)
-                  :person/account (java.net.URI. "http://test.credo.io")
+                  :person/account (java.net.URI. "http://mike.test.credo.io")
                   :person/firstName "mike"
                   :person/lastName "nuteson"
                   :person/email "mike@test.credo.io"
-                  :person.metrics/height 0.0
-                  :person.metrics/weight 0.0}
+                  :person/metrics {:person.metrics/id (d/squuid)
+                                   :person.metrics/height 0.0
+                                   :person.metrics/weight 0.0}}
                  {:db/id (d/tempid :db.part/user)
-                  :person/account (java.net.URI. "http://test.credo.io")
+                  :person/account (java.net.URI. "http://luis.test.credo.io")
                   :person/firstName "luis"
                   :person/lastName "andrade"
                   :person/email "luis@test.credo.io"
-                  :person.metrics/height 0.0
-                  :person.metrics/weight 0.0}
+                  :person/metrics {:person.metrics/id (d/squuid)
+                                   :person.metrics/height 0.0
+                                   :person.metrics/weight 0.0}}
                  {:db/id (d/tempid :db.part/user)
-                  :person/account (java.net.URI. "http://test.credo.io")
+                  :person/account (java.net.URI. "http://christian.test.credo.io")
                   :person/firstName "christian"
                   :person/lastName "anschuetz"
                   :person/email "christian@test.credo.io"
-                  :person.metrics/height 0.0
-                  :person.metrics/weight 0.0}] 
+                  :person/metrics {:person.metrics/id (d/squuid)
+                                   :person.metrics/height 0.0
+                                   :person.metrics/weight 0.0}}
+                 ] 
         tx      @(d/transact conn t)]
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
     (str tx)))
@@ -102,19 +108,19 @@
 (defn init-challenge []
   (let [t       [{:db/id (d/tempid :db.part/user)
                   :challenge/id (d/squuid)
-                  :challenge/program 17592186045428
+                  :challenge/program 17592186045437
                   :challenge/startDate (clojure.instant/read-instant-date "2014-10-31")
                   :challenge/endDate (clojure.instant/read-instant-date "2014-12-31")
 
                   :challenge/exceptions 
                   [{:challenge.exception/id (d/squuid)
-                    :challenge.exception/parameter 17592186045429 
+                    :challenge.exception/parameter 17592186045438 
                     :challenge.exception/quantity 4}
                    {:challenge.exception/id (d/squuid)
-                    :challenge.exception/parameter 17592186045430 
+                    :challenge.exception/parameter 17592186045439 
                     :challenge.exception/quantity 3}
                    {:challenge.exception/id (d/squuid)
-                    :challenge.exception/parameter 17592186045431
+                    :challenge.exception/parameter 17592186045440
                     :challenge.exception/quantity  1}]}] 
         tx      @(d/transact conn t)]
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
@@ -134,8 +140,8 @@
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
     (str tx)))
 
-(issue-invite 17592186045425 17592186045426 17592186045428 "try some science in your diet")
-(issue-invite 17592186045426 17592186045427 17592186045428 "you won't make it")
+(issue-invite 17592186045425 17592186045426 17592186045442 "try some science in your diet")
+(issue-invite 17592186045426 17592186045427 17592186045442 "you won't make it")
 
 (defn accept-invite [invite]
   (let [t [{:db/id invite :invite/status :invite.status/accepted}]
@@ -147,6 +153,29 @@
         tx @(d/transact conn t)]
     (str tx)))
 
-(accept-invite 17592186045448)
-(decline-invite 17592186045454)
+(accept-invite 17592186045447)
+(decline-invite 17592186045449)
+
+(defn get-users []
+  (d/q '[:find ?e :where [?e :person/email]] (d/db conn)))
+
+(defn get-programs []
+  (d/q '[:find ?e :where [?e :program/id]] (d/db conn)))
+
+(defn get-program-parameters []
+  (d/q '[:find ?e :where [?e :program.parameter/id]] (d/db conn)))
+
+(defn get-challenges []
+  (d/q '[:find ?e :where [?e :challenge/id]] (d/db conn)))
+
+(defn get-challenge-exceptions []
+  (d/q '[:find ?e :where [?e :challenge.exception/id]] (d/db conn)))
+
+(defn get-invites []
+  (d/q '[:find ?e :where [?e :invite/id]] (d/db conn)))
+
+(defn reify-entities [ids]
+  (map #(d/touch (d/entity (d/db conn) (first  %))) ids))
+
+
 
