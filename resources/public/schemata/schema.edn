@@ -121,9 +121,9 @@
  :db/doc "adherence entity ref(s)"
  :db.install/_attribute :db.part/db}
 
-;;adherence entity
+;;adherence entity header
 {:db/id #db/id[:db.part/db]
- :db/ident :person.adherence/id
+ :db/ident :adherence.header/id
  :db/valueType :db.type/uuid
  :db/unique :db.unique/identity
  :db/cardinality :db.cardinality/one
@@ -131,28 +131,44 @@
  :db.install/_attribute :db.part/db}
 
 {:db/id #db/id[:db.part/db]
- :db/ident :person.adherence/challenge
+ :db/ident :adherence.header/challenge
  :db/valueType :db.type/ref
  :db/cardinality :db.cardinality/one
  :db/doc "the challenge instance to which adherence is being tracked"
  :db.install/_attribute :db.part/db}
 
 {:db/id #db/id[:db.part/db]
- :db/ident :person.adherence/parameter
- :db/valueType :db.type/ref
- :db/cardinality :db.cardinality/one
- :db/doc "challenge parameter to which adherence is being tracked"
- :db.install/_attribute :db.part/db}
-
-{:db/id #db/id[:db.part/db]
- :db/ident :person.adherence/date
+ :db/ident :adherence.header/date
  :db/valueType :db.type/instant
  :db/cardinality :db.cardinality/one
  :db/doc "date for which adherence is being tracked"
  :db.install/_attribute :db.part/db}
 
 {:db/id #db/id[:db.part/db]
- :db/ident :person.adherence/value
+ :db/ident :adherence.header/items
+ :db/valueType :db.type/ref
+ :db/cardinality :db.cardinality/many
+ :db/doc "adherence items"
+ :db.install/_attribute :db.part/db}
+
+;;adherence line items
+{:db/id #db/id[:db.part/db]
+ :db/ident :adherence.item/id
+ :db/valueType :db.type/uuid
+ :db/unique :db.unique/identity
+ :db/cardinality :db.cardinality/one
+ :db/doc "adherence unique id"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :adherence.item/parameter
+ :db/valueType :db.type/ref
+ :db/cardinality :db.cardinality/one
+ :db/doc "challenge parameter to which adherence is being tracked"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :adherence.item/value
  :db/valueType :db.type/boolean
  :db/cardinality :db.cardinality/one
  :db/doc "record of adherence"
@@ -218,11 +234,34 @@
  :db.install/_attribute :db.part/db}
 
 {:db/id #db/id[:db.part/db]
- :db/ident :program.parameter/text
+ :db/ident :program.parameter/displayText
  :db/valueType :db.type/string 
  :db/cardinality :db.cardinality/one
- :db/doc "program parameter text"
+ :db/doc "program parameter display text - 'i will do x y times in period p"
  :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :program.parameter/questionText
+ :db/valueType :db.type/string 
+ :db/cardinality :db.cardinality/one
+ :db/doc "question participants will answer daily - 'did you do x today?'"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :program.parameter/quantity
+ :db/valueType :db.type/long 
+ :db/cardinality :db.cardinality/one
+ :db/doc "program parameter amount - 'y times'"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :program.parameter/period
+ :db/valueType :db.type/long 
+ :db/cardinality :db.cardinality/one
+ :db/doc "program parameter period - 'in period p'"
+ :db.install/_attribute :db.part/db}
+
+
 
 
 

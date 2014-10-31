@@ -80,7 +80,7 @@
   (ANY "/session" [] (test-session))
   (ANY "/datomic-test" [] (nr/json (datomic-content)))
   (ANY "/entity-test" [] (get-entity))
-  (ANY "/datomic" [] (stormpath/test-datomic))
+  ;;(ANY "/datomic" [] (stormpath/test-datomic))
   (ANY "/hello" {params :params} (hello-resource (:name params)))
   (ANY "/hello/:name" [name] (hello-resource name))
 

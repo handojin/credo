@@ -25,6 +25,7 @@
                   :person/metrics {:person.metrics/id (d/squuid)
                                    :person.metrics/height 0.0
                                    :person.metrics/weight 0.0}}
+                 
                  {:db/id (d/tempid :db.part/user)
                   :person/account (java.net.URI. "http://glenn.test.credo.io")
                   :person/firstName "glenn"
@@ -33,6 +34,7 @@
                   :person/metrics {:person.metrics/id (d/squuid)
                                    :person.metrics/height 0.0
                                    :person.metrics/weight 0.0}}
+                 
                  {:db/id (d/tempid :db.part/user)
                   :person/account (java.net.URI. "http://mike.test.credo.io")
                   :person/firstName "mike"
@@ -41,6 +43,7 @@
                   :person/metrics {:person.metrics/id (d/squuid)
                                    :person.metrics/height 0.0
                                    :person.metrics/weight 0.0}}
+                 
                  {:db/id (d/tempid :db.part/user)
                   :person/account (java.net.URI. "http://luis.test.credo.io")
                   :person/firstName "luis"
@@ -49,6 +52,7 @@
                   :person/metrics {:person.metrics/id (d/squuid)
                                    :person.metrics/height 0.0
                                    :person.metrics/weight 0.0}}
+                 
                  {:db/id (d/tempid :db.part/user)
                   :person/account (java.net.URI. "http://christian.test.credo.io")
                   :person/firstName "christian"
@@ -56,8 +60,8 @@
                   :person/email "christian@test.credo.io"
                   :person/metrics {:person.metrics/id (d/squuid)
                                    :person.metrics/height 0.0
-                                   :person.metrics/weight 0.0}}
-                 ] 
+                                   :person.metrics/weight 0.0}}]
+ 
         tx      @(d/transact conn t)]
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
     (str tx)))
@@ -66,40 +70,76 @@
 
 (defn init-programs []
   (let [t       [{:db/id (d/tempid :db.part/user)
+
                   :program/id (d/squuid)
+
                   :program/name "science... it works"
+
                   :program/description "a science based approach to better health"
-                  :program/parameters [{:program.parameter/id (d/squuid)
-                                        :program.parameter/text 
-                                        "I will get 8 hours of sleep every day"}
-                                       {:program.parameter/id (d/squuid)
-                                        :program.parameter/text 
-                                        "I will do 15 minutes of interval sprints 3 times a week"}
-                                       {:program.parameter/id (d/squuid)
-                                        :program.parameter/text 
-                                        "I will do stronglifts 5x5 workouts 3 times a week"}
-                                       {:program.parameter/id (d/squuid)
-                                        :program.parameter/text 
-                                        "I will only consume my target calories"}
-                                       {:program.parameter/id (d/squuid)
-                                        :program.parameter/text 
-                                        "I will drink 3l of water per day"}]
+
+                  :program/parameters
+                  [{:program.parameter/id (d/squuid)
+                    :program.parameter/displayText "I will get 8 hours of sleep every day"
+                    :program.parameter/questionText "Did you get 8 hours sleep?"
+                    :program.parameter/quantity 8
+                    :program.parameter/period 1}
+                   
+                   {:program.parameter/id (d/squuid)
+                    :program.parameter/displayText "I will do 15 minutes of interval sprints 3 times a week"
+                    :program.parameter/questionText "Did you do your cardio workout?"
+                    :program.parameter/quantity 3
+                    :program.parameter/period 7}
+
+                   {:program.parameter/id (d/squuid)
+                    :program.parameter/displayText "I will do stronglifts 5x5 workouts 3 times a week"
+                    :program.parameter/questionText "Did you do your strength training workout?"
+                    :program.parameter/quantity 3
+                    :program.parameter/period 7}
+
+                   {:program.parameter/id (d/squuid)
+                    :program.parameter/displayText "I will only consume my target calories"
+                    :program.parameter/questionText "Did you stay within your calorie budget?"
+                    :program.parameter/quantity 1
+                    :program.parameter/period 1}
+
+                   {:program.parameter/id (d/squuid)
+                    :program.parameter/displayText "I will drink 3l of water per day"
+                    :program.parameter/questionText "Did you drink your water"
+                    :program.parameter/quantity 8
+                    :program.parameter/period 1}]
+
                   :program/type :program.type/public}
+
                  {:db/id (d/tempid :db.part/user)
+
                   :program/id (d/squuid)
+
                   :program/name "kmetz crossfit 722"
+
                   :program/description "the way of the cross"
-                  :program/parameters [{:program.parameter/id (d/squuid)
-                                        :program.parameter/text 
-                                        "I will get 8 hours of sleep every day"}
-                                       {:program.parameter/id (d/squuid)
-                                        :program.parameter/text 
-                                        "I will do 15 minutes of interval sprints 3 times a week"}
-                                       {:program.parameter/id (d/squuid)
-                                        :program.parameter/text 
-                                        "I will do stronglifts 5x5 workouts 3 times a week"}]
-                  :program/type :program.type/public}] 
-        tx      @(d/transact conn t)]
+
+                  :program/parameters
+                  [{:program.parameter/id (d/squuid)
+                    :program.parameter/displayText "I will do 15 minutes of interval sprints 3 times a week"
+                    :program.parameter/questionText "Did you do your cardio workout?"
+                    :program.parameter/quantity 3
+                    :program.parameter/period 7}
+
+                   {:program.parameter/id (d/squuid)
+                    :program.parameter/displayText "I will do stronglifts 5x5 workouts 3 times a week"
+                    :program.parameter/questionText "Did you do your strength training workout?"
+                    :program.parameter/quantity 3
+                    :program.parameter/period 7}
+
+                   {:program.parameter/id (d/squuid)
+                    :program.parameter/displayText "I will only consume my target calories"
+                    :program.parameter/questionText "Did you stay within your calorie budget?"
+                    :program.parameter/quantity 1
+                    :program.parameter/period 1}]  
+
+                   :program/type :program.type/public}] 
+        
+                 tx      @(d/transact conn t)]
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
     (str tx)))
 
@@ -108,20 +148,23 @@
 (defn init-challenge []
   (let [t       [{:db/id (d/tempid :db.part/user)
                   :challenge/id (d/squuid)
-                  :challenge/program 17592186045437
+                  :challenge/program 17592186045442
                   :challenge/startDate (clojure.instant/read-instant-date "2014-10-31")
                   :challenge/endDate (clojure.instant/read-instant-date "2014-12-31")
 
                   :challenge/exceptions 
                   [{:challenge.exception/id (d/squuid)
-                    :challenge.exception/parameter 17592186045438 
+                    :challenge.exception/parameter 17592186045443 
                     :challenge.exception/quantity 4}
+
                    {:challenge.exception/id (d/squuid)
-                    :challenge.exception/parameter 17592186045439 
+                    :challenge.exception/parameter 17592186045444 
                     :challenge.exception/quantity 3}
+
                    {:challenge.exception/id (d/squuid)
-                    :challenge.exception/parameter 17592186045440
-                    :challenge.exception/quantity  1}]}] 
+                    :challenge.exception/parameter 17592186045445
+                    :challenge.exception/quantity  1}]}]
+        
         tx      @(d/transact conn t)]
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
     (str tx)))
@@ -140,12 +183,31 @@
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
     (str tx)))
 
-(issue-invite 17592186045425 17592186045426 17592186045442 "try some science in your diet")
-(issue-invite 17592186045426 17592186045427 17592186045442 "you won't make it")
+(issue-invite 17592186045425 17592186045427 17592186045447 "try some science in your diet")
+;; (issue-invite 17592186045426 17592186045427 17592186045442 "you won't make it")
 
 (defn accept-invite [invite]
   (let [t [{:db/id invite :invite/status :invite.status/accepted}]
-        tx @(d/transact conn t)]
+        tx @(d/transact conn t)
+        
+        challenge-ids (d/pull (d/db conn) '[:invite/challengee 
+                                            :invite/challenger 
+                                            :invite/challenge] invite)
+
+        t [(conj  (:invite/challengee challenge-ids)
+                  {:person/adherence {:adherence.header/id (d/squuid)
+                                      :adherence.header/challenge (:invite/challenge challenge-ids)
+                                      :adherence.header/date (java.util.Date.)
+                                      }}
+                  
+                  )]
+        
+        tx @(d/transact conn t)
+
+        ;;program-id (d/pull (d/db conn) '[:challenge/program])
+
+        ;;params 
+        ]
     (str tx)))
 
 (defn decline-invite [invite]
@@ -153,8 +215,9 @@
         tx @(d/transact conn t)]
     (str tx)))
 
-(accept-invite 17592186045447)
-(decline-invite 17592186045449)
+;;(accept-invite 17592186045452)
+
+;; (decline-invite 17592186045449)
 
 (defn get-users []
   (d/q '[:find ?e :where [?e :person/email]] (d/db conn)))
