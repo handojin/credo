@@ -2,7 +2,8 @@
   (:require [noir.response :as response]
             [noir.session :as session]
             [noir.io :as io]
-            [datomic.api :as d])
+            [datomic.api :as d]
+            [credo.api.database.init :as init :refer [conn]])
   (:import (com.stormpath.sdk.client Client Clients)
            (com.stormpath.sdk.api ApiKey ApiKeys)
            (com.stormpath.sdk.application Application Applications)
@@ -66,29 +67,29 @@
 (defn login []
   (response/redirect (get-id-site-url)))
 
-;;database
-(def uri "datomic:mem://credo")
+;; ;;database
+;; (def uri "datomic:mem://credo")
 
-(d/create-database uri)
+;; (d/create-database uri)
 
-(def conn (d/connect uri))
+;; (def conn (d/connect uri))
 
 ;;initialize schema
-(d/transact conn  (read-string (io/slurp-resource "/schemata/schema.edn")))
+;;(d/transact conn  (read-string (io/slurp-resource "/schemata/schema.edn")))
 
 (defn- new-profile [result]
   (let [account (.getAccount result)
         ;;custom  (.getCustomData account)
-        conn    (d/connect "datomic:mem://credo")
+        ;;conn    (d/connect "datomic:mem://credo")
         db      (d/db conn)
         tID     (d/tempid :db.part/user)
         tx      [{:db/id tID 
-                  :person/account (java.net.URI. (.getHref account))
+                  :person/account (.getHref account)
                   :person/firstName (.getGivenName account)
                   :person/lastName (.getSurname account)
                   :person/email (.getEmail account)
-                  :person/height 0.0
-                  :person/weight 0.0}]
+                  :person/metrics {:person.metrics/height 0.0
+                   :person.metrics/weight 0.0}}]
         tx      @(d/transact conn tx)
         eID     (d/resolve-tempid (d/db conn) (:tempids tx) tID)
         ]

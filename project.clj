@@ -13,14 +13,9 @@
                 
                  ;;web stack
                  [javax.servlet/servlet-api "2.5"]
-                 ;;[ring/ring-json "0.3.1"]
-                 ;;[compojure "1.1.8"]
                  [lib-noir "0.9.1"]
                  [liberator "0.12.2"]
                  [http-kit "2.1.16"] 
-                
-                 ;;[ring/ring-devel "1.3.0"]
-                 ;;[org.clojure/data.json "0.2.5"]
                  
                  ;;stormpath - identity management
                  [com.stormpath.sdk/stormpath-sdk-api "1.0.RC2"]
@@ -36,7 +31,7 @@
                  ;;database
                  [com.datomic/datomic-free "0.9.5052"] 
                  ;;schema visualization
-                 [datomic-schema-grapher "0.0.1"]
+                 ;;[datomic-schema-grapher "0.0.1"]
 
                  ;;logging
                  [com.taoensso/timbre "3.2.1"]]

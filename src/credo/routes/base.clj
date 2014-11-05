@@ -8,16 +8,17 @@
             [liberator.core :refer [defresource]]
             [credo.api.hello :as hello]
             [credo.api.stormpath :as stormpath]
-            [credo.api.database.init :as init]
+            [credo.api.database.init :as init :refer [conn]]
+            [credo.api.spike.adherence :as spike]
             [datomic.api :as d]
             [net.cgrand.enlive-html :as html]))
 
 ;;database
-(def uri "datomic:mem://credo")
+;; (def uri "datomic:mem://credo")
 
-(d/create-database uri)
+;; (d/create-database uri)
 
-(def conn (d/connect uri))
+;; (def conn (d/connect uri))
 
 (defn- test-session []
   ;;(session/put! :testKey "test")
@@ -60,15 +61,11 @@
         (bigint id) 
         :person/weight)))
 
-;;liberator resources
-(defresource hello-resource [name]
-  ;;(timbre/info (str "in defresource with param " name))
-  :available-media-types ["text/plain" "text/html"]
-  :allowed-methods [:post :get]
-  :post! (fn [_] (hello/hello name))
-  :post-redirect? true
-  :location (str "/hello/" name)
-  :handle-ok (fn [_] (hello/hello name)))
+
+(defn- api-user [id]
+  (let [id (bigint id)]
+    (nr/json (spike/user id))))
+
 
 ;;compojure routes
 (defroutes routes
@@ -78,19 +75,36 @@
 
   ;;tests
   (ANY "/session" [] (test-session))
-  (ANY "/datomic-test" [] (nr/json (datomic-content)))
-  (ANY "/entity-test" [] (get-entity))
-  ;;(ANY "/datomic" [] (stormpath/test-datomic))
-  (ANY "/hello" {params :params} (hello-resource (:name params)))
-  (ANY "/hello/:name" [name] (hello-resource name))
 
   ;;login/register
   (ANY "/login" [] (stormpath/login))
+  
+  ;;user - front end & tests
   (ANY "/id" request (stormpath/id request))
   (GET "/id/:id" [id] (get-profile id))
   (POST "/id/:id" [id height weight] (set-profile id height weight))
   (ANY "/id/:id/history/weight" [id] (get-weight-history id))
+
+  ;;user - api
+  (GET "/api/users/:id" [id] (api-user id) ) ;;TODO: implement get user api
+  (POST "/api/users/:id" [id] () ) ;;TODO: implement set user api??
+  
+
+  ;;programs
+  (GET "/api/programs/public" [] (nr/json(init/reify-entities(init/get-programs))))
+  (GET "/api/programs/:programID" [programID] (nr/json(d/pull (d/db conn) '[*] [:program/id (java.util.UUID/fromString programID)]))){}
   ;;static resources
   (route/resources "/")
   (route/files "/" {:root "resources/public"})
   (route/not-found "not found"))
+
+
+;; ;;liberator resources
+;; (defresource hello-resource [name]
+;;   ;;(timbre/info (str "in defresource with param " name))
+;;   :available-media-types ["text/plain" "text/html"]
+;;   :allowed-methods [:post :get]
+;;   :post! (fn [_] (hello/hello name))
+;;   :post-redirect? true
+;;   :location (str "/hello/" name)
+;;   :handle-ok (fn [_] (hello/hello name)))

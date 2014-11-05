@@ -21,7 +21,7 @@
 (defn destroy []
   (timbre/info "credo shutdown"))
 
-(def app (->
-          (nm/app-handler [base/routes])
+(def app (;;->
+          nm/app-handler [base/routes]
           ;;(reload/wrap-reload)
           ))

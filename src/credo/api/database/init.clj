@@ -3,10 +3,11 @@
             [noir.io :as io]))
 
 ;;database
-(def uri "datomic:mem://credo")
+(def uri "datomic:free://localhost:4334/credo")
 
-(d/delete-database uri)
+;(d/delete-database uri)
 (d/create-database uri)
+
 
 (def conn (d/connect uri))
 
@@ -18,7 +19,7 @@
 
 (defn init-users []
   (let [t       [{:db/id (d/tempid :db.part/user)
-                  :person/account (java.net.URI. "http://oli.test.credo.io")
+                  :person/account "http://oli.test.credo.io"
                   :person/firstName "oliver"
                   :person/lastName "gorman"
                   :person/email "oli@test.credo.io"
@@ -27,7 +28,7 @@
                                    :person.metrics/weight 0.0}}
                  
                  {:db/id (d/tempid :db.part/user)
-                  :person/account (java.net.URI. "http://glenn.test.credo.io")
+                  :person/account "http://glenn.test.credo.io"
                   :person/firstName "glenn"
                   :person/lastName "bates"
                   :person/email "glenn@test.credo.io"
@@ -36,7 +37,7 @@
                                    :person.metrics/weight 0.0}}
                  
                  {:db/id (d/tempid :db.part/user)
-                  :person/account (java.net.URI. "http://mike.test.credo.io")
+                  :person/account "http://mike.test.credo.io"
                   :person/firstName "mike"
                   :person/lastName "nuteson"
                   :person/email "mike@test.credo.io"
@@ -45,7 +46,7 @@
                                    :person.metrics/weight 0.0}}
                  
                  {:db/id (d/tempid :db.part/user)
-                  :person/account (java.net.URI. "http://luis.test.credo.io")
+                  :person/account "http://luis.test.credo.io"
                   :person/firstName "luis"
                   :person/lastName "andrade"
                   :person/email "luis@test.credo.io"
@@ -54,7 +55,7 @@
                                    :person.metrics/weight 0.0}}
                  
                  {:db/id (d/tempid :db.part/user)
-                  :person/account (java.net.URI. "http://christian.test.credo.io")
+                  :person/account "http://christian.test.credo.io"
                   :person/firstName "christian"
                   :person/lastName "anschuetz"
                   :person/email "christian@test.credo.io"
@@ -183,7 +184,7 @@
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
     (str tx)))
 
-(issue-invite 17592186045425 17592186045427 17592186045447 "try some science in your diet")
+(issue-invite 17592186045427 17592186045425 17592186045447 "try some science in your diet")
 ;; (issue-invite 17592186045426 17592186045427 17592186045442 "you won't make it")
 
 (defn accept-invite [invite]
