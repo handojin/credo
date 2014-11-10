@@ -5,7 +5,7 @@
 ;;database
 (def uri "datomic:free://localhost:4334/credo")
 
-;(d/delete-database uri)
+;;(d/delete-database uri)
 (d/create-database uri)
 
 
@@ -137,7 +137,6 @@
                     :program.parameter/questionText "Did you stay within your calorie budget?"
                     :program.parameter/quantity 1
                     :program.parameter/period 1}]  
-
                    :program/type :program.type/public}] 
         
                  tx      @(d/transact conn t)]
@@ -149,6 +148,7 @@
 (defn init-challenge []
   (let [t       [{:db/id (d/tempid :db.part/user)
                   :challenge/id (d/squuid)
+                  :challenge/name "this is a test - of your will"
                   :challenge/program 17592186045442
                   :challenge/startDate (clojure.instant/read-instant-date "2014-10-31")
                   :challenge/endDate (clojure.instant/read-instant-date "2014-12-31")
@@ -170,7 +170,7 @@
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
     (str tx)))
 
-(init-challenge)
+;;(init-challenge)
 
 (defn issue-invite [challenger challengee challenge message]
   (let [t       [{:db/id (d/tempid :db.part/user)
@@ -184,7 +184,7 @@
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
     (str tx)))
 
-(issue-invite 17592186045427 17592186045425 175921860454 "try some science in your diet")
+;;(issue-invite 17592186045427 17592186045425 175921860454 "try some science in your diet")
 ;; (issue-invite 17592186045426 17592186045427 17592186045442 "you won't make it")
 
 (defn accept-invite [invite]

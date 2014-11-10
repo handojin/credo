@@ -74,6 +74,34 @@
       [:div#invites] (html/content (map invite-snippet invites))))
   (reduce str (profile)))
 
+
+(defn- get-challenge [cID uID]
+  (let
+      [cID (bigint cID)
+       uID (bigint uID)
+       challenge (spike/challenge cID)]
+    
+    (html/defsnippet parameters-snippet "../resources/public/challenge_template.html" 
+      {[:div#challengeSpec] [:span#exceptions]}
+      [program]
+      ;;do stuff)
+
+    (html/defsnippet adherence-snippet "../resources/public/challenge_template.html" 
+      {[:div#challengeAdherence] [:input#adherenceQuestion]}
+      [program]
+      ;;do stuff)
+
+    (html/deftemplate challenge "../resources/public/challenge_template.html" []
+      [(html/attr= :name "__anti-forgery-token")] (html/set-attr :value af/*anti-forgery-token*)
+      [:title] (html/content (:program/name (:challenge/program challenge)))
+      [:h1#pageTitle] (html/content (:program/name (:challenge/program challenge)))
+      [:span#challengeName] (html/content (:program/name (:challenge/program challenge)))
+      [:span#challengeDesc] (html/content (:program/description (:challenge/program challenge)))
+   
+
+      ))
+   (reduce str (challenge)))
+
 (defn- set-profile [id height weight]
   (let [metrics-id (:db/id 
                     (:person/metrics 
@@ -116,7 +144,9 @@
   (GET "/id/:id" [id] (get-profile id))
   (POST "/id/:id" [id height weight] (set-profile id height weight))
   (ANY "/id/:id/history/weight" [id] (get-weight-history id))
-
+  ;;user challenges
+  (GET "/id/:uID/challenge/:cID" [cID uID] (get-challenge cID uID))
+  
   ;;user - api
   (GET "/api/users/:id" [id] (api-user id) ) ;;TODO: implement get user api
   (POST "/api/users/:id" [id] () ) ;;TODO: implement set user api??

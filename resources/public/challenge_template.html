@@ -1,26 +1,45 @@
 <html>
-  <head><title>challenge template</title></head>
-<body>
-<form>
-  Challenge
-  <label for="name">Name</label><input type="text"/> <br/>
-  <label for="description">Description</label><input type="textarea"/><br/>
-  <br/>
-  <br/>
-  Beliefs
-  <label for="belief1">Belief</label><input type="text" name="belief1"/><br/>
-  <label for="belief2">Belief</label><input type="text" name="belief2"/><br/>
-  <label for="belief3">Belief</label><input type="text" name="belief3"/><br/>
-  <label for="belief4">Belief</label><input type="text" name="belief4"/><br/>
-  <label for="belief5">Belief</label><input type="text" name="belief5"/><br/>
-  <br/>
-  <br/>
-  Exceptions
-  <label for="exception1">Exception</label><input type="text" name="exception1"/><br/>
-  <label for="exception2">Exception</label><input type="text" name="exception2"/><br/>
-  <label for="exception3">Exception</label><input type="text" name="exception3"/><br/>
-  <br/>
-  <br/>
-</form>
-</body>
+  <head>
+
+    <title>challenge template</title>
+
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css" />
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
+
+  </head>
+
+
+  <body>
+    <h1 id="pageTitle">Challenge</h1>
+
+    <form class="pure-form" action="" method="POST">
+      
+      <input name="__anti-forgery-token" type="hidden"/>
+
+      <fieldset>
+        <legend>Challenge</legend>
+        <div id="challenge">
+          <span id="challengeName"><p>Challenge Name</p></span>
+          <span id="challengeDesc"><p>Description</p></span>
+        </div>
+      </fieldset>
+
+      
+      <fieldset>
+        <legend>Beliefs</legend>
+        <div id="challengeSpec">
+          <span id="parameters"><p>Belief</p></span>
+          <span id="exceptions"><p>Exception</p></span>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Adherence</legend>
+        <div id="challengeAdherence">
+          <label for="parameterAdherence">Parameter</label>
+          <input type="radio" id="parameterAdherence" name="parameterAdherence"/>
+        </div>
+      </fieldset>  
+    </form>
+  </body>
 </html>

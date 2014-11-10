@@ -23,3 +23,9 @@
 
 (defn full [id]
   {:user (user id) :invites (invites id)})
+
+(defn challenge [cID] 
+  (d/pull (d/db conn) '[* {:challenge/program [*]}] cID))
+
+(defn program [pID]
+  (d/pull (d/db conn) [*] pID))
