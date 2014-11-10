@@ -3,27 +3,54 @@
 
     <title>Profile</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css" />
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/grids-responsive-min.css">
 
 
   </head>
   <body>
-    <h1>Profile Page</h1>
+    <h1 id="pageTitle">Profile Page</h1>
     
-    <div id="profile">
-      <label for="firstName">Name</label><span id=firstName>FirstName</span><span id=lastName>LastName</span>
-      <br/>
-      <label for="email">Email</label><span id="email">Email</span>
-      <br/>
-    </div>
-    <div id="credo">
-    </div>
-    <div id="metrics">
-      <form action="" method="POST">
-        <input name="__anti-forgery-token" type="hidden"/>
-        <label for="height">Height</label><input type="text" name="height" id="height" /><br/>
-        <label for="weight">Weight</label><input type="text" name="weight" id="weight" /><br/>
-        <input type="submit" value="submit"> 
-      </form>
-    </div>
+    <form class="pure-form" action="" method="POST">
+      
+      <input name="__anti-forgery-token" type="hidden"/>
+         
+      <fieldset>
+        <legend>User Profile</legend>
+        <div id="profile"> 
+          <label for="firstName">Name</label>
+          <input type="text" name="firstName" id="firstName" />
+          <input type="text" name="lastName" id="lastName" />
+          <br/>
+          <label for="email">Email</label>
+          <input type="email" name="email" id="email" />
+          <br/>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Invites</legend>
+        <div id="invites" class="pure-g">
+          <div class="pure-u-1-4" id="inviteChallenge">
+            <a id="inviteChallengeLink" href="">Challenge</a>
+          </div>
+          <div class="pure-u-1-4" id="inviteChallenger">User</div>
+          <div class="pure-u-1-4" id="inviteMessage">Message</div>
+          <div class="pure-u-1-4" id="inviteAcceptance">
+              <a class="pure-button pure-button-primary" id="inviteAccept" href="">Accept</a>
+          </div>
+        </div>
+      </fieldset>
+      
+      <fieldset>
+        <legend>Metrics</legend>
+        <div id="metrics">
+          <label for="height">Height</label>
+          <input type="text" name="height" id="height" />
+          <label for="weight">Weight</label>
+          <input type="text" name="weight" id="weight" /><br/>
+          <input type="submit" value="submit"> 
+        </div>
+      </fieldset>
+    </form>
   </body>
 </html>

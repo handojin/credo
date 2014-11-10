@@ -8,15 +8,18 @@
 
 (defn user [id]
   (d/pull (d/db conn) '[* {:person/adherence
-                           [{:adherence.header/challenge  [:challenge/id :challenge/startDate]}]}] id))
+                           [{:adherence.header/challenge  
+                             [:challenge/id :challenge/startDate]}]}] id))
 
 (defn invites [id]
-  (d/pull-many (d/db conn) '[*] 
+  (d/pull-many (d/db conn) '[* {:invite/challenger [*] 
+                                :invite/challenge [* 
+                                                   {:challenge/exceptions 
+                                                    [* 
+                                                     {:challenge.exception/parameter [*]}]}]}] 
                (flatten 
                 (seq  
                  (d/q '[:find ?e :in $ ?id :where [?e :invite/challengee ?id]] (d/db conn) id)))))
-
-
 
 (defn full [id]
   {:user (user id) :invites (invites id)})

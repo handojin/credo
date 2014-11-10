@@ -33,22 +33,54 @@
 
 (defn- get-profile [id]
   (let 
-      [idx (bigint id)
-       entity (d/touch (d/entity (d/db conn) idx))]
+      [id (bigint id)
+       entity (spike/full id)
+       user (:user entity)
+       metrics (:person/metrics (:user entity))
+       invites (:invites entity)
+       base-url-challenge "../challenges/"
+       base-url-invite "../invites/"]
+    
+    (html/defsnippet invite-snippet "../resources/public/profile.html" 
+      {[:div#inviteChallenge] [:div#inviteAcceptance]} 
+      [invite]
+
+      [:a#inviteChallengeLink] 
+      (html/set-attr :href (str base-url-challenge (:db/id (:invite/challenge invite))))
+      
+      [:div#inviteChallenger] 
+      (html/content (str (:person/email (:invite/challenger invite))))
+      
+      [:div#inviteMessage] 
+      (html/content (str (:invite/message invite)))
+
+      [:a#inviteAccept] 
+      (html/set-attr :href (str base-url-invite (:db/id invite))))
+
     (html/deftemplate profile "../resources/public/profile.html" []
       [(html/attr= :name "__anti-forgery-token")] (html/set-attr :value af/*anti-forgery-token*)
-      [:title] (html/content (str (:person/firstName entity)))
-      [:span#firstName] (html/content (str (:person/firstName entity)))
-      [:span#lastName] (html/content (str (:person/lastName entity)))
-      [:span#email] (html/content (str (:person/email entity)))
-      [:input#height] (html/set-attr :value (str (:person/height entity)))
-      [:input#weight] (html/set-attr :value (str (:person/weight entity)))))
+      [:title] (html/content (str (:person/firstName user)))
+      [:h1#pageTitle] (html/content (str (:person/firstName user) " " (:person/lastName user)))
+      [:input#firstName] (html/set-attr 
+                       :value (str (:person/firstName user)))
+      [:input#lastName] (html/set-attr 
+                       :value (str (:person/lastName user)))
+      [:input#email] (html/set-attr 
+                       :value (str (:person/email user)))
+      [:input#height] (html/set-attr 
+                       :value (str (:person.metrics/height metrics)))
+      [:input#weight] (html/set-attr 
+                       :value (str (:person.metrics/weight metrics)))
+      [:div#invites] (html/content (map invite-snippet invites))))
   (reduce str (profile)))
 
 (defn- set-profile [id height weight]
-  (d/transact conn [{:db/id (bigint id) 
-                     :person/weight (Float/parseFloat weight)
-                     :person/height (Float/parseFloat height)}])
+  (let [metrics-id (:db/id 
+                    (:person/metrics 
+                     (d/pull (d/db conn) [{:person/metrics [:db/id]}] (bigint id))))]
+    (d/transact conn [{:db/id metrics-id 
+                       :person.metrics/weight (Float/parseFloat weight)
+                       :person.metrics/height (Float/parseFloat height)}]))
   (nr/redirect (str "http://localhost:8080/id/" id)))
 
 (defn- get-weight-history [id]
@@ -64,7 +96,7 @@
 
 (defn- api-user [id]
   (let [id (bigint id)]
-    (nr/json (spike/user id))))
+    (nr/json (spike/full id))))
 
 
 ;;compojure routes
@@ -92,7 +124,11 @@
 
   ;;programs
   (GET "/api/programs/public" [] (nr/json(init/reify-entities(init/get-programs))))
-  (GET "/api/programs/:programID" [programID] (nr/json(d/pull (d/db conn) '[*] [:program/id (java.util.UUID/fromString programID)]))){}
+  (GET "/api/programs/:programID" [programID] (nr/json
+                                               (d/pull 
+                                                (d/db conn) 
+                                                '[*] [:program/id 
+                                                      (java.util.UUID/fromString programID)])))
   ;;static resources
   (route/resources "/")
   (route/files "/" {:root "resources/public"})

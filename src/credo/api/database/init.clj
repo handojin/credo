@@ -184,32 +184,41 @@
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
     (str tx)))
 
-(issue-invite 17592186045427 17592186045425 17592186045447 "try some science in your diet")
+(issue-invite 17592186045427 17592186045425 175921860454 "try some science in your diet")
 ;; (issue-invite 17592186045426 17592186045427 17592186045442 "you won't make it")
 
 (defn accept-invite [invite]
-  (let [t [{:db/id invite :invite/status :invite.status/accepted}]
-        tx @(d/transact conn t)
-        
-        challenge-ids (d/pull (d/db conn) '[:invite/challengee 
-                                            :invite/challenger 
-                                            :invite/challenge] invite)
+  (let 
+      [t [{:db/id invite :invite/status :invite.status/accepted}]
+       tx @(d/transact conn t)
+       
+       challenge-ids (d/pull (d/db conn) '[:invite/challengee 
+                                           :invite/challenger 
+                                           :invite/challenge] invite)
 
-        t [(conj  (:invite/challengee challenge-ids)
-                  {:person/adherence {:adherence.header/id (d/squuid)
-                                      :adherence.header/challenge (:invite/challenge challenge-ids)
-                                      :adherence.header/date (java.util.Date.)
-                                      }}
-                  
-                  )]
-        
-        tx @(d/transact conn t)
+       challenge-exceptions (:challenge/exceptions (d/pull 
+                                                    (d/db conn) 
+                                                    '[{:challenge/exceptions 
+                                                       [:db/id :challenge.exception/parameter]}] (:db/id (:invite/challenge challenge-ids))))
+       t [(conj  (:invite/challengee challenge-ids)
+                 {:person/adherence {:adherence.header/id (d/squuid)
+                                     :adherence.header/challenge (:invite/challenge challenge-ids)
+                                     :adherence.header/date (java.util.Date.)
+                                     :adherence.header/items (mapv #(hash-map :db/id (d/tempid :db.part/user) 
+                                                                              :adherence.item/id (d/squuid) 
+                                                                              :adherence.item/parameter (:challenge.exception/parameter %) 
+                                                                              :adherence.item/value false) challenge-exceptions)}}
+                 )]
+       
+       tx @(d/transact conn t)
+       
+       
 
-        ;;program-id (d/pull (d/db conn) '[:challenge/program])
+       ;;program-id (d/pull (d/db conn) '[:challenge/program])
 
-        ;;params 
-        ]
-    (str tx)))
+       ;;params 
+       ]
+    t))
 
 (defn decline-invite [invite]
   (let [t [{:db/id invite :invite/status :invite.status/declined}]
