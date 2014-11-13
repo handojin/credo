@@ -13,12 +13,6 @@
             [datomic.api :as d]
             [net.cgrand.enlive-html :as html]))
 
-;;database
-;; (def uri "datomic:mem://credo")
-
-;; (d/create-database uri)
-
-;; (def conn (d/connect uri))
 
 (defn- test-session []
   ;;(session/put! :testKey "test")
@@ -75,22 +69,39 @@
   (reduce str (profile)))
 
 
+
+
 (defn- get-challenge [cID uID]
   (let
       [cID (bigint cID)
        uID (bigint uID)
-       challenge (spike/challenge cID)]
+       challenge (spike/challenge cID)
+       adherence (spike/adherence uID)]
     
-    (html/defsnippet parameters-snippet "../resources/public/challenge_template.html" 
-      {[:div#challengeSpec] [:span#exceptions]}
-      [program]
-      ;;do stuff)
+    (html/defsnippet parameters-exceptions-snippet "../resources/public/challenge_template.html" 
+      {[:span#parameters] [:p#exception]}
+      [parameter-exception]
+      
+      [:p#parameter]
+      (html/content (str (:program.parameter/displayText (:challenge.exception/parameter parameter-exception))))
+
+      [:p#exception]
+      (html/content (str (:challenge.exception/quantity parameter-exception))))
 
     (html/defsnippet adherence-snippet "../resources/public/challenge_template.html" 
-      {[:div#challengeAdherence] [:input#adherenceQuestion]}
-      [program]
-      ;;do stuff)
+      {[:p#question] [:input#responseNo]}
+      [adherence-item]
+      
+      [:p#question] 
+      (html/content (str (:program.parameter/questionText (:adherence.item/parameter adherence-item))))
+      
+      [:input#responseYes]
+      (html/set-attr :name (str (:db/id (:adherence.item/parameter adherence-item))))
+      [:input#responseNo]
+      (html/set-attr :name (str (:db/id (:adherence.item/parameter adherence-item))))      
 
+      )
+     
     (html/deftemplate challenge "../resources/public/challenge_template.html" []
       [(html/attr= :name "__anti-forgery-token")] (html/set-attr :value af/*anti-forgery-token*)
       [:title] (html/content (:program/name (:challenge/program challenge)))
@@ -98,7 +109,11 @@
       [:span#challengeName] (html/content (:program/name (:challenge/program challenge)))
       [:span#challengeDesc] (html/content (:program/description (:challenge/program challenge)))
    
-
+      [:div#challengeSpec] (html/content (map parameters-exceptions-snippet (:challenge/exceptions challenge)))
+      
+      [:div#challengeAdherence] 
+      (html/content (map adherence-snippet (:adherence.header/items (first (:person/adherence adherence)))))
+      ;;(html/content "test")
       ))
    (reduce str (challenge)))
 
@@ -110,6 +125,9 @@
                        :person.metrics/weight (Float/parseFloat weight)
                        :person.metrics/height (Float/parseFloat height)}]))
   (nr/redirect (str "http://localhost:8080/id/" id)))
+
+
+
 
 (defn- get-weight-history [id]
   (str

@@ -138,15 +138,9 @@
  :db.install/_attribute :db.part/db}
 
 {:db/id #db/id[:db.part/db]
- :db/ident :adherence.header/date
- :db/valueType :db.type/instant
- :db/cardinality :db.cardinality/one
- :db/doc "date for which adherence is being tracked"
- :db.install/_attribute :db.part/db}
-
-{:db/id #db/id[:db.part/db]
  :db/ident :adherence.header/items
  :db/valueType :db.type/ref
+ :db/isComponent true
  :db/cardinality :db.cardinality/many
  :db/doc "adherence items"
  :db.install/_attribute :db.part/db}
@@ -158,6 +152,13 @@
  :db/unique :db.unique/identity
  :db/cardinality :db.cardinality/one
  :db/doc "adherence unique id"
+ :db.install/_attribute :db.part/db}
+
+{:db/id #db/id[:db.part/db]
+ :db/ident :adherence.item/date
+ :db/valueType :db.type/instant
+ :db/cardinality :db.cardinality/one
+ :db/doc "date for which adherence is being tracked"
  :db.install/_attribute :db.part/db}
 
 {:db/id #db/id[:db.part/db]

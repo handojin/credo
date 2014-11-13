@@ -8,14 +8,13 @@
 ;;(d/delete-database uri)
 (d/create-database uri)
 
-
 (def conn (d/connect uri))
 
 ;;initialize schema
 (defn init-schema []
   (d/transact conn  (read-string (io/slurp-resource "/schemata/schema.edn"))))
 
-(init-schema)
+;;(init-schema)
 
 (defn init-users []
   (let [t       [{:db/id (d/tempid :db.part/user)
@@ -67,7 +66,7 @@
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
     (str tx)))
 
-(init-users)
+;;(init-users)
 
 (defn init-programs []
   (let [t       [{:db/id (d/tempid :db.part/user)
@@ -143,7 +142,7 @@
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
     (str tx)))
 
-(init-programs)
+;(init-programs)
 
 (defn init-challenge []
   (let [t       [{:db/id (d/tempid :db.part/user)
@@ -184,7 +183,7 @@
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
     (str tx)))
 
-;;(issue-invite 17592186045427 17592186045425 175921860454 "try some science in your diet")
+;;(issue-invite 17592186045427 17592186045425 17592186045447 "try some science in your diet")
 ;; (issue-invite 17592186045426 17592186045427 17592186045442 "you won't make it")
 
 (defn accept-invite [invite]
@@ -196,29 +195,25 @@
                                            :invite/challenger 
                                            :invite/challenge] invite)
 
-       challenge-exceptions (:challenge/exceptions (d/pull 
-                                                    (d/db conn) 
-                                                    '[{:challenge/exceptions 
-                                                       [:db/id :challenge.exception/parameter]}] (:db/id (:invite/challenge challenge-ids))))
+       challenge-exceptions (:challenge/exceptions 
+                             (d/pull 
+                              (d/db conn) 
+                              '[{:challenge/exceptions 
+                                 [:db/id :challenge.exception/parameter]}] (:db/id (:invite/challenge challenge-ids))))
+
        t [(conj  (:invite/challengee challenge-ids)
-                 {:person/adherence {:adherence.header/id (d/squuid)
-                                     :adherence.header/challenge (:invite/challenge challenge-ids)
-                                     :adherence.header/date (java.util.Date.)
-                                     :adherence.header/items (mapv #(hash-map :db/id (d/tempid :db.part/user) 
-                                                                              :adherence.item/id (d/squuid) 
-                                                                              :adherence.item/parameter (:challenge.exception/parameter %) 
-                                                                              :adherence.item/value false) challenge-exceptions)}}
-                 )]
-       
-       tx @(d/transact conn t)
-       
-       
-
-       ;;program-id (d/pull (d/db conn) '[:challenge/program])
-
-       ;;params 
-       ]
-    t))
+                 {:person/adherence 
+                  {:adherence.header/id (d/squuid)
+                   :adherence.header/challenge (:invite/challenge challenge-ids)
+                   :adherence.header/date (java.util.Date.)
+                   :adherence.header/items (mapv 
+                                            #(hash-map :db/id (d/tempid :db.part/user) 
+                                                       :adherence.item/id (d/squuid) 
+                                                       :adherence.item/parameter (:challenge.exception/parameter %) 
+                                                       :adherence.item/value false) challenge-exceptions)}})]
+       tx @(d/transact conn t)]
+    challenge-ids
+))
 
 (defn decline-invite [invite]
   (let [t [{:db/id invite :invite/status :invite.status/declined}]
@@ -250,5 +245,9 @@
 (defn reify-entities [ids]
   (map #(d/touch (d/entity (d/db conn) (first  %))) ids))
 
-
+(defn- init-system []
+  (init-schema)
+  (init-users)
+  (init-programs)
+  (init-challenge))
 

@@ -28,18 +28,22 @@
       <fieldset>
         <legend>Beliefs</legend>
         <div id="challengeSpec">
-          <span id="parameters"><p>Belief</p></span>
-          <span id="exceptions"><p>Exception</p></span>
+          <span id="parameters"><p id="parameter">Belief</p></span>
+          <span id="exceptions"><p id="exception">Exception</p></span>
         </div>
       </fieldset>
 
       <fieldset>
         <legend>Adherence</legend>
+        <input type="date" name="adherenceDate"/>
         <div id="challengeAdherence">
-          <label for="parameterAdherence">Parameter</label>
-          <input type="radio" id="parameterAdherence" name="parameterAdherence"/>
+          <p id="question">Question</p>       
+          <input type="radio" id="responseYes" name="parameterAdherence" value="yes"/>
+          <input type="radio" id="responseNo" name="parameterAdherence" value="no" checked/>
         </div>
+        <input type="submit" />
       </fieldset>  
     </form>
   </body>
 </html>
+

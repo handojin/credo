@@ -25,7 +25,17 @@
   {:user (user id) :invites (invites id)})
 
 (defn challenge [cID] 
-  (d/pull (d/db conn) '[* {:challenge/program [*]}] cID))
+  (d/pull (d/db conn) '[* {:challenge/program 
+                           [:program/name :program/description] 
+                           :challenge/exceptions 
+                           [* {:challenge.exception/parameter [*]}]}] cID))
+
+(defn adherence [uID]
+  (d/pull (d/db conn) '[{:person/adherence 
+                         [* 
+                          {:adherence.header/items 
+                           [{:adherence.item/parameter 
+                             [:db/id :program.parameter/questionText]}]}]}] uID))
 
 (defn program [pID]
   (d/pull (d/db conn) [*] pID))
