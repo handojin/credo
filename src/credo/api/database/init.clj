@@ -12,7 +12,7 @@
 
 ;;initialize schema
 (defn init-schema []
-  (d/transact conn  (read-string (io/slurp-resource "/schemata/schema.edn"))))
+  @(d/transact conn  (read-string (io/slurp-resource "/schemata/schema.edn"))))
 
 ;;(init-schema)
 
@@ -154,7 +154,7 @@
 
                   :challenge/exceptions 
                   [{:challenge.exception/id (d/squuid)
-                    :challenge.exception/parameter 17592186045443 
+                    :challenge.exception/parameter 17592186045443
                     :challenge.exception/quantity 4}
 
                    {:challenge.exception/id (d/squuid)
@@ -183,7 +183,7 @@
     ;;(d/touch (d/entity db  (d/resolve-tempid db (:tempids tx) tID)))
     (str tx)))
 
-;;(issue-invite 17592186045427 17592186045425 17592186045447 "try some science in your diet")
+;(issue-invite 17592186045427 17592186045425 17592186045447 "try some science in your diet")
 ;; (issue-invite 17592186045426 17592186045427 17592186045442 "you won't make it")
 
 (defn accept-invite [invite]
@@ -205,24 +205,18 @@
                  {:person/adherence 
                   {:adherence.header/id (d/squuid)
                    :adherence.header/challenge (:invite/challenge challenge-ids)
-                   :adherence.header/date (java.util.Date.)
                    :adherence.header/items (mapv 
-                                            #(hash-map :db/id (d/tempid :db.part/user) 
-                                                       :adherence.item/id (d/squuid) 
-                                                       :adherence.item/parameter (:challenge.exception/parameter %) 
-                                                       :adherence.item/value false) challenge-exceptions)}})]
-       tx @(d/transact conn t)]
-    challenge-ids
-))
+                                            #(hash-map 
+                                              :db/id (d/tempid :db.part/user) 
+                                              :adherence.item/id (d/squuid) 
+                                              :adherence.item/parameter (:challenge.exception/parameter %) 
+                                              :adherence.item/value false) challenge-exceptions)}})]
+       tx @(d/transact conn t)]))
 
 (defn decline-invite [invite]
   (let [t [{:db/id invite :invite/status :invite.status/declined}]
         tx @(d/transact conn t)]
     (str tx)))
-
-;;(accept-invite 17592186045452)
-
-;; (decline-invite 17592186045449)
 
 (defn get-users []
   (d/q '[:find ?e :where [?e :person/email]] (d/db conn)))
@@ -251,3 +245,4 @@
   (init-programs)
   (init-challenge))
 
+;;(init-system)

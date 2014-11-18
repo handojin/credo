@@ -83,39 +83,57 @@
       [parameter-exception]
       
       [:p#parameter]
-      (html/content (str (:program.parameter/displayText (:challenge.exception/parameter parameter-exception))))
+      (html/content (str 
+                     (:program.parameter/displayText 
+                      (:challenge.exception/parameter parameter-exception))))
 
       [:p#exception]
-      (html/content (str (:challenge.exception/quantity parameter-exception))))
+      (html/content (str 
+                     (:challenge.exception/quantity parameter-exception))))
 
     (html/defsnippet adherence-snippet "../resources/public/challenge_template.html" 
       {[:p#question] [:input#responseNo]}
       [adherence-item]
       
       [:p#question] 
-      (html/content (str (:program.parameter/questionText (:adherence.item/parameter adherence-item))))
+      (html/content (str 
+                     (:program.parameter/questionText 
+                      (:adherence.item/parameter adherence-item))))
       
       [:input#responseYes]
-      (html/set-attr :name (str (:db/id (:adherence.item/parameter adherence-item))))
+      (html/set-attr :name (str 
+                            (:db/id adherence-item)))
       [:input#responseNo]
-      (html/set-attr :name (str (:db/id (:adherence.item/parameter adherence-item))))      
-
-      )
+      (html/set-attr :name (str 
+                            (:db/id adherence-item))))
      
-    (html/deftemplate challenge "../resources/public/challenge_template.html" []
+
+    (html/deftemplate challenge-template "../resources/public/challenge_template.html" []
       [(html/attr= :name "__anti-forgery-token")] (html/set-attr :value af/*anti-forgery-token*)
-      [:title] (html/content (:program/name (:challenge/program challenge)))
-      [:h1#pageTitle] (html/content (:program/name (:challenge/program challenge)))
-      [:span#challengeName] (html/content (:program/name (:challenge/program challenge)))
-      [:span#challengeDesc] (html/content (:program/description (:challenge/program challenge)))
+      
+      [:title] 
+      (html/content (:program/name (:challenge/program challenge)))
+      
+      [:h1#pageTitle] 
+      (html/content (:program/name (:challenge/program challenge)))
+      
+      [:span#challengeName]
+      (html/content (:program/name (:challenge/program challenge)))
+      
+      [:span#challengeDesc] 
+      (html/content (:program/description (:challenge/program challenge)))
    
-      [:div#challengeSpec] (html/content (map parameters-exceptions-snippet (:challenge/exceptions challenge)))
+      [:div#challengeSpec] 
+      (html/content (map parameters-exceptions-snippet (:challenge/exceptions challenge)))
       
       [:div#challengeAdherence] 
-      (html/content (map adherence-snippet (:adherence.header/items (first (:person/adherence adherence)))))
-      ;;(html/content "test")
-      ))
-   (reduce str (challenge)))
+      (html/content (map 
+                     adherence-snippet 
+                     (:adherence.header/items (first (:person/adherence adherence))))))
+
+     (reduce str (challenge-template))))
+
+
 
 (defn- set-profile [id height weight]
   (let [metrics-id (:db/id 
@@ -128,23 +146,69 @@
 
 
 
-
 (defn- get-weight-history [id]
-  (str
-   (d/q '[:find ?tx ?tx-time ?v 
-          :in $ ?e ?a 
-          :where [?e ?a ?v ?tx _] 
-          [?tx :db/txInstant ?tx-time]] 
-        (d/history (d/db conn)) 
-        (bigint id) 
-        :person/weight)))
+  (let [id (bigint id)
+        id (:db/id 
+            (:person/metrics 
+             (d/pull (d/db conn) '[{:person/metrics [:db/id]}] id)))]
+    (str
+     (d/q '[:find ?tx ?tx-time ?v 
+            :in $ ?e ?a 
+            :where [?e ?a ?v ?tx _] 
+            [?tx :db/txInstant ?tx-time]] 
+          (d/history (d/db conn)) 
+          (bigint id) 
+          :person.metrics/weight))))
 
+(defn- get-adherence-entities [uID cID]
+  (let [uID (bigint uID)
+        cID (bigint cID)
+        aID (d/q 
+             '[:find ?v :in $ ?uID ?cID 
+               :where 
+               [?uID :person/adherence ?aID] 
+               [?aID :adherence.header/challenge ?cID] 
+               [_ :adherence.header/items ?v]] (d/db conn) uID cID)] (sort-by first aID)))
+    
+(defn- get-adherence-item-entity-history [eID]
+  (let [eID (first eID)
+
+        adherence-txs (d/q '[:find ?tx ?tx-time
+                             :in $ ?e
+                             :where 
+                             [?e _ _ ?tx _]
+                             [?tx :db/txInstant ?tx-time]]
+                           (d/history (d/db conn)) eID) 
+        
+        adherence-history (map 
+                           #(conj (hash-map :tx-time (second %)) 
+                                  (d/touch 
+                                   (d/entity 
+                                    (d/as-of (d/db conn) (first %)) eID))) 
+                           (reverse (sort-by first adherence-txs)))]
+    
+    (hash-map :entity eID :history (group-by :adherence.item/date adherence-history))))
+
+(defn- get-adherence-history [uID cID]
+  (map #(get-adherence-item-entity-history %) (get-adherence-entities uID cID)))
 
 (defn- api-user [id]
   (let [id (bigint id)]
     (nr/json (spike/full id))))
 
 
+(defn- set-adherence [cID uID adherence-date params]
+  (let [adherence-params (map bigint  
+                           (filter seq 
+                                   (map #(re-find  #"[0-9]*" %) (map name (keys params)))))
+        t (mapv #(hash-map 
+                 :db/id % 
+                 :adherence.item/date (clojure.instant/read-instant-date adherence-date)
+                 :adherence.item/value (if (= "true" (get params (str %))) true false)) adherence-params)
+        
+        tx @(d/transact conn t)] (nr/redirect (str "/id/" uID "/challenge/" cID))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;compojure routes
 (defroutes routes
   ;;index page
@@ -162,9 +226,12 @@
   (GET "/id/:id" [id] (get-profile id))
   (POST "/id/:id" [id height weight] (set-profile id height weight))
   (ANY "/id/:id/history/weight" [id] (get-weight-history id))
-  ;;user challenges
+  ;;user challenge
   (GET "/id/:uID/challenge/:cID" [cID uID] (get-challenge cID uID))
-  
+  ;;challenge adherence
+  (POST "/id/:uID/challenge/:cID" 
+        [cID uID adherenceDate & params] (set-adherence cID uID adherenceDate params))
+
   ;;user - api
   (GET "/api/users/:id" [id] (api-user id) ) ;;TODO: implement get user api
   (POST "/api/users/:id" [id] () ) ;;TODO: implement set user api??

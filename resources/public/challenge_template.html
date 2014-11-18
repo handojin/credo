@@ -38,8 +38,10 @@
         <input type="date" name="adherenceDate"/>
         <div id="challengeAdherence">
           <p id="question">Question</p>       
-          <input type="radio" id="responseYes" name="parameterAdherence" value="yes"/>
-          <input type="radio" id="responseNo" name="parameterAdherence" value="no" checked/>
+          <label for="responseYes">Yes</label>
+          <input type="radio" id="responseYes" name="parameterAdherence" value=true />
+          <label for="responseNo">No</label>   
+          <input type="radio" id="responseNo" name="parameterAdherence" value=false checked />
         </div>
         <input type="submit" />
       </fieldset>  

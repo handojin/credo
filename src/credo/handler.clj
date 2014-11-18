@@ -2,7 +2,8 @@
   (:require [noir.util.middleware :as nm]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.rotor :as rotor]
-            [credo.routes.base :as base]))
+            [credo.routes.base :as base]
+            [ring.middleware.reload :as reload]))
 
 (defn init []
   (timbre/set-config! [:appenders :rotor]
@@ -21,7 +22,7 @@
 (defn destroy []
   (timbre/info "credo shutdown"))
 
-(def app (;;->
-          nm/app-handler [base/routes]
-          ;;(reload/wrap-reload)
+(def app (->
+          (nm/app-handler [base/routes])
+          (reload/wrap-reload)
           ))

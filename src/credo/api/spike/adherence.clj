@@ -34,7 +34,7 @@
   (d/pull (d/db conn) '[{:person/adherence 
                          [* 
                           {:adherence.header/items 
-                           [{:adherence.item/parameter 
+                           [:db/id {:adherence.item/parameter 
                              [:db/id :program.parameter/questionText]}]}]}] uID))
 
 (defn program [pID]
