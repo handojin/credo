@@ -28,17 +28,17 @@
                  
                  {:db/id (d/tempid :db.part/user)
                   :person/account "http://glenn.test.credo.io"
-                  :person/firstName "glenn"
-                  :person/lastName "bates"
-                  :person/email "glenn@test.credo.io"
+                  :person/firstName "glenda"
+                  :person/lastName "bats"
+                  :person/email "glenda@test.credo.io"
                   :person/metrics {:person.metrics/id (d/squuid)
                                    :person.metrics/height 0.0
                                    :person.metrics/weight 0.0}}
                  
                  {:db/id (d/tempid :db.part/user)
                   :person/account "http://mike.test.credo.io"
-                  :person/firstName "mike"
-                  :person/lastName "nuteson"
+                  :person/firstName "mikhail"
+                  :person/lastName "newt"
                   :person/email "mike@test.credo.io"
                   :person/metrics {:person.metrics/id (d/squuid)
                                    :person.metrics/height 0.0
@@ -46,18 +46,18 @@
                  
                  {:db/id (d/tempid :db.part/user)
                   :person/account "http://luis.test.credo.io"
-                  :person/firstName "luis"
-                  :person/lastName "andrade"
-                  :person/email "luis@test.credo.io"
+                  :person/firstName "luiz"
+                  :person/lastName "apres"
+                  :person/email "luiz@test.credo.io"
                   :person/metrics {:person.metrics/id (d/squuid)
                                    :person.metrics/height 0.0
                                    :person.metrics/weight 0.0}}
                  
                  {:db/id (d/tempid :db.part/user)
                   :person/account "http://christian.test.credo.io"
-                  :person/firstName "christian"
-                  :person/lastName "anschuetz"
-                  :person/email "christian@test.credo.io"
+                  :person/firstName "chris"
+                  :person/lastName "shots"
+                  :person/email "chris@test.credo.io"
                   :person/metrics {:person.metrics/id (d/squuid)
                                    :person.metrics/height 0.0
                                    :person.metrics/weight 0.0}}]

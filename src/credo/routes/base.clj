@@ -187,7 +187,15 @@
                                     (d/as-of (d/db conn) (first %)) eID))) 
                            (reverse (sort-by first adherence-txs)))]
     
-    (hash-map :entity eID :history (group-by :adherence.item/date adherence-history))))
+    (hash-map 
+     :entity eID 
+     :history (map 
+               #(hash-map 
+                 :timestamp (first %) 
+                 :value (first (second %)))  
+               (group-by :adherence.item/date adherence-history)))))
+
+
 
 (defn- get-adherence-history [uID cID]
   (map #(get-adherence-item-entity-history %) (get-adherence-entities uID cID)))
